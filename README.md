@@ -3,7 +3,7 @@
 ## ❓ 問題陳述
 2024年9月初，美國加州和內華達州因持續高溫和乾燥天氣爆發多起野火。最具代表性的是南加州的幾場野火，包括在洛杉磯東部和聖伯納地諾國家森林的火災，這些火災迅速蔓延，我們能否利用歷史天氣和野火數據來預測火災發生的可能性？
 
-## 📦 樣品詳情：
+## 📦 樣品詳情
 
 [California Weather and Fire Prediction Dataset (1984–2025) with Engineered Features](https://zenodo.org/records/14712845) <br>
 - 1984 年至 2025 年期間

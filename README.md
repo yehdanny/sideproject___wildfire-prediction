@@ -134,4 +134,6 @@
 - 有時序或結構性輸入：採用 Attention 或 LSTM 變體。
 
 ---
+### 🔥 模型比較 
 
+![Accuracy_compare](./img/Accuracy_d.PNG)

@@ -1,0 +1,14 @@
+cp -r ./mlruns/ ..//MLflow/
+然後開MLflow的vscode指令mlflow ui --port 8080開
+
+
+#
+with mlflow.start_run():#mlflow
+    mlflow.tensorflow.autolog()#mlflow    
+
+run_id = mlflow.active_run().info.run_id#mlflow
+print(f"Model saved in run {run_id}")#mlflow
+
+
+#mlflow.log_metric("Train score", log_reg.score(X_train, y_train))#mlflow
+#mlflow.log_metric("Test score", log_reg.score(X_test, y_test))#mlflow

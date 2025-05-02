@@ -3,3 +3,4 @@ _env
 models_temp
 mlruns
 !mlruns/models/
+/hint

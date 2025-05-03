@@ -7,33 +7,61 @@
 
 [California Weather and Fire Prediction Dataset (1984–2025) with Engineered Features](https://zenodo.org/records/14712845) <br>
 - 1984 年至 2025 年期間
-- 對同一月和同一年內不同地點發生的多起火災實例進行多重索引
-- 我們合併的資料集中發生了 4,279 起火災
-- 6,709 筆記錄無火災發生紀錄
+- 對同一月和同一年內不同地點發生共`11980`起火災實例進行多重索引
+- 我們合併的資料集中發生了 `4073` 起火災
+- `7907` 筆記錄無火災發生紀錄
 
 ## 📊 數據詳情 
 
 ### Data Dictionary:
-|Feature|Type|Description|
-|---|---|---|
-|**date**|*object*|The month and year of when the fire took place.|
-|**county**|*object*|The county the fire started in.|
-|**maxtempF**|*float*|The average maximum temperature of that month in °F.|
-|**mintempF**|*float*|The average min temperature of that month in °F.|
-|**avgtempF**|*float*|The average average temperature of that month in °F.|
-|**totalSnow**|*float*|The total snow for that month.|
-|**humid**|*float*|The average humidity for that month.|
-|**wind**|*float*|The average wind for that month.|
-|**precip**|*float*|The average precipitation for that month.|
-|**q_avgtempF**|*float*|The quarterly average temperature in °F.|
-|**q_avghumid**|*float*|The quarterly average humidity.|
-|**q_sumprecip**|*float*|The quarterly average precipitation.|
-|**sunHour**|*float*|The average hours of sun for that month.|
-|**FIRE_NAME**|*object*|The name of the fire.|
-|**CAUSE**|*float*|The cause of the fire.|
-|**lat**|*float*|The latitude coordinate of the fire's location.|
-|**long**|*float*|The longitude coordinate of the fire's location.|
-|**GIS_ACRES**|*float*|The total number of acres burned.|
+| 欄位名稱               | 說明                                                                 |
+|------------------------|----------------------------------------------------------------------|
+| DATE                   | 當天的觀測日期                                                       |
+| PRECIPITATION          | 每日降水量（英吋）                                                   |
+| MAX_TEMP               | 每日最高氣溫（華氏）                                                 |
+| MIN_TEMP               | 每日最低氣溫（華氏）                                                 |
+| AVG_WIND_SPEED         | 每日平均風速（英里/小時）                                           |
+| FIRE_START_DAY         | 是否於該日發生野火（布林值：True/False）                            |
+| YEAR                   | 年份                                                                 |
+| TEMP_RANGE             | 當日最高與最低溫差，反映氣溫變化程度                                |
+| WIND_TEMP_RATIO        | 平均風速與最高溫度的比值，捕捉風與溫度間的動態關係                  |
+| MONTH                  | 月份（1–12）                                                        |
+| SEASON                 | 季節（Winter, Spring, Summer, Fall）                                |
+| LAGGED_PRECIPITATION   | 前 7 天的累積降水量，反映近一週的濕潤條件                            |
+| LAGGED_AVG_WIND_SPEED  | 前 7 天的平均風速，反映持續的風力狀況                                |
+| DAY_OF_YEAR            | 當年度中的天數（1–365 或 366）                                     |
+
+#### 根據[NOAA](https://www.noaa.gov/noaa-wildfire)和[Climate](https://www.climate.gov/news-features/event-tracker/weather-and-climate-influences-january-2025-fires-around-los-angeles)我額外加入下面五種指標
+
+### 1. 氣溫變異指數（Temperature Variation Index）  
+| **項目**      | **內容**                                                                                   |
+|---------------|--------------------------------------------------------------------------------------------|
+| **定義**      | 每日氣溫的變異程度，反映當天最高和最低氣溫之間的差異。較大的溫差可能與氣候極端性相關，進一步加劇火災風險。 |
+| **公式**      | `TEMP_VARIATION = MAX_TEMP - MIN_TEMP`                                                     |
+
+### 2. 降水與風速比率（Precipitation-Wind Ratio）  
+| **項目**      | **內容**                                                                                   |
+|---------------|--------------------------------------------------------------------------------------------|
+| **定義**      | 衡量降水量與風速之間的關聯。當降水量低且風速高時，通常意味著乾燥條件與強風並存，火災風險上升。            |
+| **公式**      | `PRECIPITATION_WIND_RATIO = PRECIPITATION / AVG_WIND_SPEED`                                |
+
+### 3. 季節性降水與風速關聯指數（Seasonal Precipitation-Wind Index）  
+| **項目**      | **內容**                                                                                   |
+|---------------|--------------------------------------------------------------------------------------------|
+| **定義**      | 綜合考量季節（SEASON）對降水與風速影響的指標。不同季節降水和風速的組合，會對火災風險產生不同作用。          |
+| **公式**      | `SEASONAL_PRECIP_WIND = (PRECIPITATION * (SEASON == 'Winter')) + (AVG_WIND_SPEED * (SEASON == 'Summer'))` |
+
+### 4. 季節性乾燥指數（Seasonal Dryness Index）  
+| **項目**      | **內容**                                                                                   |
+|---------------|--------------------------------------------------------------------------------------------|
+| **定義**      | 根據當季（秋季或冬季）的降水量與日溫差來評估乾燥程度。乾燥季節中的高乾燥值與火災風險高度相關。             |
+| **公式**      | `SEASONAL_DRYNESS = (PRECIPITATION * (SEASON == 'Fall' or SEASON == 'Winter')) / (MAX_TEMP - MIN_TEMP)` |
+
+### 5. 日中溫差與風速結合指數（Diurnal Temperature and Wind Speed Index） 
+| **項目**      | **內容**                                                                                   |
+|---------------|--------------------------------------------------------------------------------------------|
+| **定義**      | 此指標將每日的氣溫差（即日間溫度變化）與風速結合，評估乾燥和高風速的條件下，火災風險的潛在性。            |
+| **公式**      | `DIURNAL_TEMP_WIND = (MAX_TEMP - MIN_TEMP) * AVG_WIND_SPEED` |
 
 
 

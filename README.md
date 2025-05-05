@@ -31,39 +31,9 @@
 | LAGGED_AVG_WIND_SPEED  | 前 7 天的平均風速，反映持續的風力狀況                                |
 | DAY_OF_YEAR            | 當年度中的天數（1–365 或 366）                                     |
 
-#### 根據[NOAA](https://www.noaa.gov/noaa-wildfire)和[Climate](https://www.climate.gov/news-features/event-tracker/weather-and-climate-influences-january-2025-fires-around-los-angeles)我額外加入下面五種指標
-
-### 1. 氣溫變異指數（Temperature Variation Index）  
-| **項目**      | **內容**                                                                                   |
-|---------------|--------------------------------------------------------------------------------------------|
-| **定義**      | 每日氣溫的變異程度，反映當天最高和最低氣溫之間的差異。較大的溫差可能與氣候極端性相關，進一步加劇火災風險。 |
-| **公式**      | `TEMP_VARIATION = MAX_TEMP - MIN_TEMP`                                                     |
-
-### 2. 降水與風速比率（Precipitation-Wind Ratio）  
-| **項目**      | **內容**                                                                                   |
-|---------------|--------------------------------------------------------------------------------------------|
-| **定義**      | 衡量降水量與風速之間的關聯。當降水量低且風速高時，通常意味著乾燥條件與強風並存，火災風險上升。            |
-| **公式**      | `PRECIPITATION_WIND_RATIO = PRECIPITATION / AVG_WIND_SPEED`                                |
-
-### 3. 季節性降水與風速關聯指數（Seasonal Precipitation-Wind Index）  
-| **項目**      | **內容**                                                                                   |
-|---------------|--------------------------------------------------------------------------------------------|
-| **定義**      | 綜合考量季節（SEASON）對降水與風速影響的指標。不同季節降水和風速的組合，會對火災風險產生不同作用。          |
-| **公式**      | `SEASONAL_PRECIP_WIND = (PRECIPITATION * (SEASON == 'Winter')) + (AVG_WIND_SPEED * (SEASON == 'Summer'))` |
-
-### 4. 季節性乾燥指數（Seasonal Dryness Index）  
-| **項目**      | **內容**                                                                                   |
-|---------------|--------------------------------------------------------------------------------------------|
-| **定義**      | 根據當季（秋季或冬季）的降水量與日溫差來評估乾燥程度。乾燥季節中的高乾燥值與火災風險高度相關。             |
-| **公式**      | `SEASONAL_DRYNESS = (PRECIPITATION * (SEASON == 'Fall' or SEASON == 'Winter')) / (MAX_TEMP - MIN_TEMP)` |
-
-### 5. 日中溫差與風速結合指數（Diurnal Temperature and Wind Speed Index） 
-| **項目**      | **內容**                                                                                   |
-|---------------|--------------------------------------------------------------------------------------------|
-| **定義**      | 此指標將每日的氣溫差（即日間溫度變化）與風速結合，評估乾燥和高風速的條件下，火災風險的潛在性。            |
-| **公式**      | `DIURNAL_TEMP_WIND = (MAX_TEMP - MIN_TEMP) * AVG_WIND_SPEED` |
-
-
+![Accuracy_compare](./img/sharp_summaryplot.png)
+![Accuracy_compare](./img/sharp_bar.png)
+![Accuracy_compare](./img/sharp_waterfall.png)
 
 ## 🧠 多種模型架構的比較與選擇策略
 
@@ -169,3 +139,39 @@
 ### 🔥 模型比較 
 
 ![Accuracy_compare](./img/Accuracy_d.PNG)
+
+
+---
+
+### 根據[NOAA](https://www.noaa.gov/noaa-wildfire)和[Climate](https://www.climate.gov/news-features/event-tracker/weather-and-climate-influences-january-2025-fires-around-los-angeles)我額外加入下面五種指標
+
+
+#### 1. 氣溫變異指數（Temperature Variation Index）  
+| **項目**      | **內容**                                                                                   |
+|---------------|--------------------------------------------------------------------------------------------|
+| **定義**      | 每日氣溫的變異程度，反映當天最高和最低氣溫之間的差異。較大的溫差可能與氣候極端性相關，進一步加劇火災風險。 |
+| **公式**      | `TEMP_VARIATION = MAX_TEMP - MIN_TEMP`                                                     |
+
+#### 2. 降水與風速比率（Precipitation-Wind Ratio）  
+| **項目**      | **內容**                                                                                   |
+|---------------|--------------------------------------------------------------------------------------------|
+| **定義**      | 衡量降水量與風速之間的關聯。當降水量低且風速高時，通常意味著乾燥條件與強風並存，火災風險上升。            |
+| **公式**      | `PRECIPITATION_WIND_RATIO = PRECIPITATION / AVG_WIND_SPEED`                                |
+
+#### 3. 季節性降水與風速關聯指數（Seasonal Precipitation-Wind Index）  
+| **項目**      | **內容**                                                                                   |
+|---------------|--------------------------------------------------------------------------------------------|
+| **定義**      | 綜合考量季節（SEASON）對降水與風速影響的指標。不同季節降水和風速的組合，會對火災風險產生不同作用。          |
+| **公式**      | `SEASONAL_PRECIP_WIND = (PRECIPITATION * (SEASON == 'Winter')) + (AVG_WIND_SPEED * (SEASON == 'Summer'))` |
+
+#### 4. 季節性乾燥指數（Seasonal Dryness Index）  
+| **項目**      | **內容**                                                                                   |
+|---------------|--------------------------------------------------------------------------------------------|
+| **定義**      | 根據當季（秋季或冬季）的降水量與日溫差來評估乾燥程度。乾燥季節中的高乾燥值與火災風險高度相關。             |
+| **公式**      | `SEASONAL_DRYNESS = (PRECIPITATION * (SEASON == 'Fall' or SEASON == 'Winter')) / (MAX_TEMP - MIN_TEMP)` |
+
+#### 5. 日中溫差與風速結合指數（Diurnal Temperature and Wind Speed Index） 
+| **項目**      | **內容**                                                                                   |
+|---------------|--------------------------------------------------------------------------------------------|
+| **定義**      | 此指標將每日的氣溫差（即日間溫度變化）與風速結合，評估乾燥和高風速的條件下，火災風險的潛在性。            |
+| **公式**      | `DIURNAL_TEMP_WIND = (MAX_TEMP - MIN_TEMP) * AVG_WIND_SPEED` |

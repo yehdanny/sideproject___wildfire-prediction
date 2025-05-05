@@ -94,7 +94,7 @@
 ### 🧭 選擇模型策略
 
 - 初期探索：可用 `Logistic Regression` 作為 baseline。
-- 精度優先：優先考慮` Random Forest` 或深度模型。
+- 精度優先：優先考慮` Random Forest` 或深度模型(`DNN`)。
 - 解釋性要求高：採用可視化特徵權重的模型，如 `RF`、`Logistic`。
 - 有時序或結構性輸入：採用 `Attention` 或 `LSTM` 變體。
 

@@ -131,7 +131,7 @@
 
 ### 🧾 結論總結
 
-<h3>
+
 
 在本專案中，我們整合了多種天氣與季節性特徵，並嘗試以六種模型來預測南加州地區的火災風險。即使在已進行 `class weight balance`、`early stopping` 以及 `learning rate schedule` 等優化策略下，模型對於少數類別（即「發生火災」）的預測準確度仍顯有限，整體 `F1-score` 僅落在 `0.66–0.68` 區間，凸顯了少數類別預測的挑戰性。
 <br>
@@ -142,9 +142,9 @@
 另一方面，深度學習模型如 `DNN` 與 `Attention` 雖在少數類別的 `precision` 與 `recall` 略遜，但在測試資料上的整體表現最穩定，且具有潛力進一步透過時間序列特徵強化（例加入去年冬季的天氣趨勢）來提升辨識力。
 
 **LSTM 效果不如預期** <br>
-相比` Logistic Regression` 或 `Random Forest``，LSTM` 屬於高參數模型，在樣本數相對有限（約 1.5 萬筆）下可能產生過擬合風險，即使有 early stopping 機制，也不易取得穩定表現。
+相比` Logistic Regression` 或 `Random Forest`，`LSTM` 屬於高參數模型，在樣本數相對有限（約 1.5 萬筆）下可能產生過擬合風險，即使有 early stopping 機制，也不易取得穩定表現。
 
-</h3>
+
 
 **總結而言：**
 

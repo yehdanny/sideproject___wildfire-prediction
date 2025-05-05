@@ -16,20 +16,32 @@
 ### Data Dictionary:
 | 欄位名稱               | 說明                                                                 |
 |------------------------|----------------------------------------------------------------------|
-| DATE                   | 當天的觀測日期                                                       |
 | PRECIPITATION          | 每日降水量（英吋）                                                   |
 | MAX_TEMP               | 每日最高氣溫（華氏）                                                 |
 | MIN_TEMP               | 每日最低氣溫（華氏）                                                 |
 | AVG_WIND_SPEED         | 每日平均風速（英里/小時）                                           |
 | FIRE_START_DAY         | 是否於該日發生野火（布林值：True/False）                            |
-| YEAR                   | 年份                                                                 |
 | TEMP_RANGE             | 當日最高與最低溫差，反映氣溫變化程度                                |
 | WIND_TEMP_RATIO        | 平均風速與最高溫度的比值，捕捉風與溫度間的動態關係                  |
-| MONTH                  | 月份（1–12）                                                        |
+| MONTH_SIN              | 對月份做 sin 轉換  保留了數值間的連續性與週期性               |
+| MONTH_COS              | 對月份做 cos 轉換  保留了數值間的連續性與週期性               |
 | SEASON                 | 季節（Winter, Spring, Summer, Fall）                                |
 | LAGGED_PRECIPITATION   | 前 7 天的累積降水量，反映近一週的濕潤條件                            |
 | LAGGED_AVG_WIND_SPEED  | 前 7 天的平均風速，反映持續的風力狀況                                |
-| DAY_OF_YEAR            | 當年度中的天數（1–365 或 366）                                     |
+| IS_RAINING             | 當日是否降雨                                  |
+| TEMP_MEAN              | 溫度平均值= (MAX_TEMP+MIN_TEMP)/2                                  |
+| PRECIPITATION_WIND_RATIO | 衡量降水量與風速之間的關聯。當降水量低且風速高時，通常意味著乾燥條件與強風並存，火災風險上升。|
+| SEASONAL_PRECIP_WIND | 綜合考量季節（SEASON）對降水與風速影響的指標。不同季節降水和風速的組合，會對火災風險產生不同作用。|
+| SEASONAL_DRYNESS        | 根據當季（秋季或冬季）的降水量與日溫差來評估乾燥程度      |
+| DIURNAL_TEMP_WIND       | 此指標將每日的氣溫差（即日間溫度變化）與風速結合，評估乾燥和高風速的條件下，火災風險的潛在性。  |
+| SEASON_Fall                | SEASON 做dummies                                     |
+| SEASON_Spring              | SEASON 做dummies                                      |
+| SEASON_Summer               | SEASON 做dummies                                     |
+| SEASON_Winter             | SEASON 做dummies                                      |
+|------------------------|----------------------------------------------------------------------|
+### 根據[NOAA](https://www.noaa.gov/noaa-wildfire)和[Climate](https://www.climate.gov/news-features/event-tracker/weather-and-climate-influences-january-2025-fires-around-los-angeles)增加指標`PRECIPITATION_WIND_RATIO`、`SEASONAL_PRECIP_WIND`、`SEASONAL_DRYNESS`、`DIURNAL_TEMP_WIND`
+
+## 📈 各項指標重要程度 
 
 ![Accuracy_compare](./img/sharp_summaryplot.png)
 ![Accuracy_compare](./img/sharp_bar.png)
@@ -61,74 +73,19 @@
 - **[我的mlflow環境](https://github.com/yehdanny/MLflow_)**
 ---
 
-### 📘 模型介紹與應用情境
+### 📘 模型介紹
 
-#### 1. 羅吉斯回歸（Logistic Regression）
-
-- **特點**：
-  - 簡潔易解釋，適合做為 baseline。
-  - 對線性關係敏感。
-- **適用情境**：
-  - 特徵維度較低，且可接受線性假設的資料集。
-  - 需要強解釋性的商業應用，如金融風險評估。
-- **缺點**：
-  - 難以處理非線性或高維非結構化資料。
+- 使用 
+  - 羅吉斯回歸（Logistic Regression）
+  - K 最近鄰（KNN）
+  - 隨機森林（Random Forest）
+  - 深度神經網路（DNN）
+  - 注意力機制（Attention Mechanism）
+  - LSTM  (Long Short-Term Memory)
 
 ---
 
-#### 2. K 最近鄰（KNN）
-
-- **特點**：
-  - 非參數模型，無需訓練即可預測。
-  - 須標準化特徵距離，對離群值敏感。
-- **適用情境**：
-  - 小型資料集。
-  - 決策邊界複雜但資料分佈稠密。
-- **缺點**：
-  - 計算成本高（尤其在大型資料上），難以擴展。
-
----
-
-#### 3. 隨機森林（Random Forest）
-
-- **特點**：
-  - 基於多棵決策樹的集成模型，具強大擬合能力與抗雜訊能力。
-  - 自動進行特徵重要性排序。
-- **適用情境**：
-  - 異質性高、非線性資料集。
-  - 需要穩健模型的應用場景，如醫療風險預測。
-- **缺點**：
-  - 難以解釋每個單獨決策，模型黑盒程度較高。
-
----
-
-#### 4. 深度神經網路（DNN）
-
-- **特點**：
-  - 多層感知器架構，能學習高度非線性特徵。
-  - 結合 Dropout 可提升泛化能力。
-- **適用情境**：
-  - 大型資料集、特徵關係複雜。
-  - 圖像、語音、序列等深層特徵提取需求。
-- **缺點**：
-  - 需較多超參數調整與訓練時間，對資料需求大。
-
----
-
-#### 5. 注意力機制（Attention Mechanism）
-
-- **特點**：
-  - 適合序列輸入資料（如文本、時間序列）。
-  - 具備動態聚焦特徵權重的能力。
-- **適用情境**：
-  - 資料存在時序性、上下文依賴性。
-  - 如聊天機器人、交易行為預測。
-- **缺點**：
-  - 架構複雜，需更多訓練資源與資料前處理。
-
----
-
-### 🧭 選模建議策略
+### 🧭 選擇模型策略
 
 - 初期探索：可用 Logistic Regression 作為 baseline。
 - 精度優先：優先考慮 Random Forest 或深度模型。
@@ -140,38 +97,64 @@
 
 ![Accuracy_compare](./img/Accuracy_d.PNG)
 
-
 ---
+## 🧪 各指標圖簡要說明
 
-### 根據[NOAA](https://www.noaa.gov/noaa-wildfire)和[Climate](https://www.climate.gov/news-features/event-tracker/weather-and-climate-influences-january-2025-fires-around-los-angeles)我額外加入下面五種指標
+### ✅ 類別 0（多數類別）
+![0_group](./img/0_group.PNG)
+
+- 0_precision：模型預測為 0 時，多數是對的（Precision 約 0.83–0.85）。
+  - DNN 、 Attention 、 LSTM 分別佔據前三名
+
+- 0_recall：模型幾乎能找出所有類別 0 樣本（Recall 約 0.84）。
+
+- 0_f1-score：大部分模型都能良好處理主類別，F1 分數高達 0.85。
+
+### ⚠️ 類別 1（少數類別）
+![1_group](./img/1_group.PNG)
+- 1_precision：XGBoost 高達 0.80，準確挑出正樣本。
+
+- 1_recall：各模型召回率約 0.63–0.68，辨識能力有限。
+
+- 1_f1-score：表現較差，最高僅約 0.67。
+
+### 📈 模型整體表現
+![scores](./img/scores.PNG)
+
+- Train score：訓練正確率落差大（0.77–0.92），Random Forest 過高，可能過擬合。
+- 
+- Test score：測試正確率約 0.76–0.78，Attention、DNN 表現最好最穩。
 
 
-#### 1. 氣溫變異指數（Temperature Variation Index）  
-| **項目**      | **內容**                                                                                   |
-|---------------|--------------------------------------------------------------------------------------------|
-| **定義**      | 每日氣溫的變異程度，反映當天最高和最低氣溫之間的差異。較大的溫差可能與氣候極端性相關，進一步加劇火災風險。 |
-| **公式**      | `TEMP_VARIATION = MAX_TEMP - MIN_TEMP`                                                     |
 
-#### 2. 降水與風速比率（Precipitation-Wind Ratio）  
-| **項目**      | **內容**                                                                                   |
-|---------------|--------------------------------------------------------------------------------------------|
-| **定義**      | 衡量降水量與風速之間的關聯。當降水量低且風速高時，通常意味著乾燥條件與強風並存，火災風險上升。            |
-| **公式**      | `PRECIPITATION_WIND_RATIO = PRECIPITATION / AVG_WIND_SPEED`                                |
+### 🧾 結論總結
 
-#### 3. 季節性降水與風速關聯指數（Seasonal Precipitation-Wind Index）  
-| **項目**      | **內容**                                                                                   |
-|---------------|--------------------------------------------------------------------------------------------|
-| **定義**      | 綜合考量季節（SEASON）對降水與風速影響的指標。不同季節降水和風速的組合，會對火災風險產生不同作用。          |
-| **公式**      | `SEASONAL_PRECIP_WIND = (PRECIPITATION * (SEASON == 'Winter')) + (AVG_WIND_SPEED * (SEASON == 'Summer'))` |
+<h5>
 
-#### 4. 季節性乾燥指數（Seasonal Dryness Index）  
-| **項目**      | **內容**                                                                                   |
-|---------------|--------------------------------------------------------------------------------------------|
-| **定義**      | 根據當季（秋季或冬季）的降水量與日溫差來評估乾燥程度。乾燥季節中的高乾燥值與火災風險高度相關。             |
-| **公式**      | `SEASONAL_DRYNESS = (PRECIPITATION * (SEASON == 'Fall' or SEASON == 'Winter')) / (MAX_TEMP - MIN_TEMP)` |
+在本專案中，我們整合了多種天氣與季節性特徵，並嘗試以六種模型來預測南加州地區的火災風險。即使在已進行 `class weight balance`、`early stopping` 以及 `learning rate schedule` 等優化策略下，模型對於少數類別（即「發生火災」）的預測準確度仍顯有限，整體 `F1-score` 僅落在 `0.66–0.68` 區間，凸顯了少數類別預測的挑戰性。
+<br>
 
-#### 5. 日中溫差與風速結合指數（Diurnal Temperature and Wind Speed Index） 
-| **項目**      | **內容**                                                                                   |
-|---------------|--------------------------------------------------------------------------------------------|
-| **定義**      | 此指標將每日的氣溫差（即日間溫度變化）與風速結合，評估乾燥和高風速的條件下，火災風險的潛在性。            |
-| **公式**      | `DIURNAL_TEMP_WIND = (MAX_TEMP - MIN_TEMP) * AVG_WIND_SPEED` |
+特別值得注意的是，`Random Forest` 和 `XGBoost` 在透過 `RandomizedSearchCV` 調參後，仍能達到約 `0.85` 的訓練準確率，顯示這類基於樹的模型在處理 `tabular` 結構數據時的穩健性與解釋性。然而，隨之而來的是過擬合風險，特別是 `Random Forest`，其訓練與測試分數差距較大。
+<br>
+
+另一方面，深度學習模型如 `DNN` 與 `Attention` 雖在少數類別的 `precision` 與 `recall` 略遜，但在測試資料上的整體表現最穩定，且具有潛力進一步透過時間序列特徵強化（例加入去年冬季的天氣趨勢）來提升辨識力。
+
+**LSTM 效果不如預期** <br>
+相比` Logistic Regression` 或 `Random Forest``，LSTM` 屬於高參數模型，在樣本數相對有限（約 1.5 萬筆）下可能產生過擬合風險，即使有 early stopping 機制，也不易取得穩定表現。
+
+</h5>
+總結而言：
+
+- 類別不平衡仍是目前預測效能的主要瓶頸。
+
+- 在強風乾燥季節，具備物理意義的工程特徵如 `SEASONAL_DRYNESS` 及 `DIURNAL_TEMP_WIND` 有助於提升模型可解釋性。
+
+- 若要進一步強化「火災發生」的辨識，可考慮引入：
+
+  - SMOTE 或 ADASYN 等資料合成技術處理不平衡。
+
+  - 時間序列建模（如 Transformer、BiLSTM） 捕捉週期性與趨勢。
+
+  - 蒐集更多實地監控資料（如地表濕度、植被乾燥度）。
+
+**本研究也展示了 `MLflow` 在實驗與模型管理上的效率與清晰度，為後續部署與調整奠定良好基礎。**

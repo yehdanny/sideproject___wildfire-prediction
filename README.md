@@ -170,7 +170,7 @@
 
 - [NoteBook](/03-optimal.ipynb)
 - 已增加 `SMOTE` 、 `Transformer` 、 `DLLSTM`，以及用前30天資料預測當天（第30天）目標
-- 使用集成模型 : XGB 、 LightGBM 、 RF 達到最佳準確率： **85%**
+- 使用集成模型 : XGB 、 LightGBM 、 RF 達到最佳準確率： **84.6%**
 
 - 額外測試深度學習模型表現如下：
   - LSTM Test Accuracy: 0.8006 

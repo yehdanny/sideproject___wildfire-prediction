@@ -163,6 +163,9 @@
 **本研究也展示了 `MLflow` 在實驗與模型管理上的效率與清晰度，為後續部署與調整奠定良好基礎。**
 
 
+<hr>
+<br>
+
 ## **✨UPDATE✨**
 
 - [NoteBook](/03-optimal.ipynb)
@@ -177,7 +180,7 @@
   - DNN (30-day window) Test Accuracy: 0.7768
   - LSTM+Attention Test Accuracy: 0.7787
 
-
+![update_acc](/img/update_acc.png)
 
 
 
